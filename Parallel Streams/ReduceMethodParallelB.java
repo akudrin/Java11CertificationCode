@@ -16,6 +16,15 @@ public class ReduceMethodParallelB {
             System.out.format("combiner: sum1=%s; sum2=%s\n", sum1, sum2);
             return sum1 + sum2;
         });
+        // the combiner function is only called in parallel but not in sequential
+        // streams
+        persons.parallelStream().reduce(0, (sum, p) -> {
+            System.out.format("accumulator: sum=%s; person=%s [%s]\n", sum, p, Thread.currentThread().getName());
+            return sum += p.age;
+        }, (sum1, sum2) -> {
+            System.out.format("combiner: sum1=%s; sum2=%s [%s]\n", sum1, sum2, Thread.currentThread().getName());
+            return sum1 + sum2;
+        });
 
     }
 
